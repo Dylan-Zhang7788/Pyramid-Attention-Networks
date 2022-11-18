@@ -33,7 +33,7 @@
                 "--res_scale","0.1",
                 "--pre_train","/home/zhangdi/zhangdi_ws/Pyramid-Attention-Networks/SR/model_x2.pt",
                 "--test_only",
-                "--dir_data","/home/zhangdi/zhangdi_ws/Pyramid-Attention-Networks/SR/",
+                "--dir_data","/home/zhangdi/zhangdi_ws/Pyramid-Attention-Networks/",
                 "--cpu"
             ]
         }
