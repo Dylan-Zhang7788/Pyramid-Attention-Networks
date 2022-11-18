@@ -1,0 +1,41 @@
+{
+    // 使用 IntelliSense 了解相关属性。 
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Python: Debug",
+            "type": "python",
+            "request": "launch",
+            "program": "SR/code/main.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": 
+            [
+                "--model","PAEDSR",
+                "--data_test","Set5",
+                "--save_results",
+                "--save_gt",
+                "--rgb_range","1",
+                "--data_range","801-900",
+                "--scale","2",
+                "--n_feats","256",
+                "--n_resblocks","32",
+                "--res_scale","0.1",
+                "--pre_train","/home/zhangdi/zhangdi_ws/Pyramid-Attention-Networks/SR/model_x2.pt",
+                "--test_only",
+                "--dir_data","/home/zhangdi/zhangdi_ws/Pyramid-Attention-Networks/SR/",
+                "--cpu"
+            ]
+        }
+    ]
+}
