@@ -23,11 +23,12 @@ class PyramidAttention(nn.Module):
         self.conv_assembly = common.BasicBlock(conv,channel, channel,1,bn=False, act=nn.PReLU())
 
     def forward(self, input):
-        res = input
+        res = input # shape:[1,256,72,72]
         #theta
-        match_base = self.conv_match_L_base(input)
+        match_base = self.conv_match_L_base(input) # [1,32,72,72] 通道数减少为原来的1/8
         shape_base = list(res.size())
-        input_groups = torch.split(match_base,1,dim=0)
+        # 把输入分开
+        input_groups = torch.split(match_base,1,dim=0) # [1,32,72,72](因为只有一张图)
         # patch size for matching 
         kernel = self.ksize
         # raw_w is for reconstruction
@@ -40,20 +41,23 @@ class PyramidAttention(nn.Module):
             if self.scale[i]!=1:
                 ref  = F.interpolate(input, scale_factor=self.scale[i], mode='bicubic')
             #feature transformation function f
-            base = self.conv_assembly(ref)
+            base = self.conv_assembly(ref) # 通道数不变
             shape_input = base.shape
             #sampling
+            # raw_w_i：[N, C*k*k, L] [batchsize，单个卷积核的参数量，卷积核的数目]
             raw_w_i = extract_image_patches(base, ksizes=[kernel, kernel],
                                       strides=[self.stride,self.stride],
                                       rates=[1, 1],
                                       padding='same') # [N, C*k*k, L]
+            # raw_w_i：[N,C,k,k,L] [batchsize，通道数，k，k，卷积核个数]
             raw_w_i = raw_w_i.view(shape_input[0], shape_input[1], kernel, kernel, -1)
+            # raw_w_i的形状为 [batchsize，卷积核个数，通道数，k，k]
             raw_w_i = raw_w_i.permute(0, 4, 1, 2, 3)    # raw_shape: [N, L, C, k, k]
             raw_w_i_groups = torch.split(raw_w_i, 1, dim=0)
             raw_w.append(raw_w_i_groups)
 
             #feature transformation function g
-            ref_i = self.conv_match(ref)
+            ref_i = self.conv_match(ref) # 通道数减少为原来的1/8
             shape_ref = ref_i.shape
             #sampling
             w_i = extract_image_patches(ref_i, ksizes=[self.ksize, self.ksize],

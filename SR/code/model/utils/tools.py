@@ -8,6 +8,8 @@ import torch.nn.functional as F
 def normalize(x):
     return x.mul_(2).add_(-1)
 
+# ksize=3 stride=1 rates=1
+# 这个函数干的事情就是把图像的周围进行填充，从而让卷积不改变图片的尺寸
 def same_padding(images, ksizes, strides, rates):
     assert len(images.size()) == 4
     batch_size, channel, rows, cols = images.size()
@@ -56,6 +58,7 @@ def extract_image_patches(images, ksizes, strides, rates, padding='same'):
                              stride=strides)
     patches = unfold(images)
     return patches  # [N, C*k*k, L], L is the total number of such blocks
+
 def reduce_mean(x, axis=None, keepdim=False):
     if not axis:
         axis = range(len(x.shape))

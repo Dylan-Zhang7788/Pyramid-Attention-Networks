@@ -55,6 +55,8 @@ def extract_image_patches(images, ksizes, strides, rates, padding='same'):
                              padding=0,
                              stride=strides)
     patches = unfold(images)
+    # unfold是利用滑块对图像进行采样 N是batch size C*K*K 表示通道数*卷积核面积
+    # L表示总共有多少个卷积核 
     return patches  # [N, C*k*k, L], L is the total number of such blocks
 def reduce_mean(x, axis=None, keepdim=False):
     if not axis:
