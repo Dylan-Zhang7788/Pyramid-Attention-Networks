@@ -158,8 +158,6 @@ class checkpoint():
                 normalized = v[0].mul(255 / self.args.rgb_range)
                 tensor_cpu = normalized.byte().permute(1, 2, 0).cpu()
                 self.queue.put(('{}{}.png'.format(filename, p), tensor_cpu))
-                tensor_cpu=tensor_cpu.numpy()
-                cv2.imwrite('xxxxx.png'.format(filename, p),tensor_cpu)
 def quantize(img, rgb_range):
     pixel_range = 255 / rgb_range
     return img.mul(pixel_range).clamp(0, 255).round().div(pixel_range)
