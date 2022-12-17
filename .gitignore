@@ -1,6 +1,6 @@
 model
 Set5
 benchmark
-.vscode
 *.pyc
-test   
+test
+weights
