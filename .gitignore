@@ -1,5 +1,5 @@
-SR/model_x2.pt
-SR/model_x4.pt
+model
+Set5
 benchmark
 .vscode
 *.pyc
