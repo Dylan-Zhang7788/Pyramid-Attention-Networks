@@ -23,12 +23,12 @@ class PyramidAttention(nn.Module):
         self.conv_assembly = common.BasicBlock(conv,channel, channel,1,bn=False, act=nn.PReLU())
 
     def forward(self, input):
-        res = input # shape:[1,256,72,72]
+        res = input # shape:[1,256,50,50]
         #theta
-        match_base = self.conv_match_L_base(input) # [1,32,72,72] 通道数减少为原来的1/8
+        match_base = self.conv_match_L_base(input) # [1,32,50,50] 通道数减少为原来的1/8
         shape_base = list(res.size())
         # 把输入分开
-        input_groups = torch.split(match_base,1,dim=0) # [1,32,72,72](因为只有一张图)
+        input_groups = torch.split(match_base,1,dim=0) # [1,32,50,50](因为只有一张图)
         # patch size for matching 
         kernel = self.ksize
         # raw_w is for reconstruction
@@ -36,12 +36,12 @@ class PyramidAttention(nn.Module):
         # w is for matching
         w = []
         #build feature pyramid
-        for i in range(len(self.scale)):    
+        for i in range(len(self.scale)): # [1.0, 0.9, 0.8, 0.7, 0.6]
             ref = input
             if self.scale[i]!=1:
                 ref  = F.interpolate(input, scale_factor=self.scale[i], mode='bicubic')
             #feature transformation function f
-            base = self.conv_assembly(ref) # 通道数不变
+            base = self.conv_assembly(ref) # 通道数不变 
             shape_input = base.shape
             #sampling
             # raw_w_i：[N, C*k*k, L] [batchsize，单个卷积核的参数量，卷积核的数目]
