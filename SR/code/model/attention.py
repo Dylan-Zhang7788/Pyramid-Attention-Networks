@@ -70,10 +70,11 @@ class PyramidAttention(nn.Module):
             w.append(w_i_groups)
 
         y = []
-        for idx, xi in enumerate(input_groups):
-            #group in a filter
-            wi = torch.cat([w[i][idx][0] for i in range(len(self.scale))],dim=0)  # [L, C, k, k]
-            #normalize
+        for idx, xi in enumerate(input_groups): #input_groups n个 [1,32,50,50]
+            #idx 的值是1-n
+            #group in a filter 
+            wi = torch.cat([w[i][idx][0] for i in range(len(self.scale))],dim=0)  # [L, ··, k, k]
+            #normalize 对每个维度都平方求和，然后和NAN比较，避免0的出现
             max_wi = torch.max(torch.sqrt(reduce_sum(torch.pow(wi, 2),
                                                      axis=[1, 2, 3],
                                                      keepdim=True)),
@@ -91,7 +92,9 @@ class PyramidAttention(nn.Module):
             
             # deconv for patch pasting
             raw_wi = torch.cat([raw_w[i][idx][0] for i in range(len(self.scale))],dim=0)
-            yi = F.conv_transpose2d(yi, raw_wi, stride=self.stride,padding=1)/4.
+            # 这里的转置卷积目的是把输入和输出的通道数目换一下，因为raw_i的通道数是[8250,256,3,3]
+            yi = F.conv_transpose2d(yi, raw_wi, stride=self.stride,padding=1)
+            yi=yi/4.
             y.append(yi)
       
         y = torch.cat(y, dim=0)+res*self.res_scale  # back to the mini-batch
