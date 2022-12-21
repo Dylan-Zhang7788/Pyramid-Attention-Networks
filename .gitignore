@@ -1,6 +1,9 @@
 model
-Set5
-benchmark
+Set5/
+Set14/
+B100/
+Urban100/
+
 *.pyc
 test
-weights
+*.pt
