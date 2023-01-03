@@ -1,6 +1,9 @@
-model_x2.pt
-SR/model_x4.pt
-benchmark
-.vscode
+model
+Set5/
+Set14/
+B100/
+Urban100/
+
 *.pyc
-test   
+test
+*.pt
